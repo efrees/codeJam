@@ -25,7 +25,7 @@ namespace Round1A
                     possibilities.Add(p);
                 }
 
-                foreach (var blades in new int[] { 2, 3, 5, 7, 11, 13, 17 })
+                foreach (var blades in new[] { 16, 9, 5, 7, 11, 13, 17 })
                 {
                     for (int i = 0; i < windmills.Length; i++)
                     {
