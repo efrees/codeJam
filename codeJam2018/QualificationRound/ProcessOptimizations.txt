@@ -1,0 +1,13 @@
+﻿Create code snippet:
+            var T = int.Parse(Console.ReadLine());
+
+            var k = 1;
+            while (k <= T)
+            {
+                $end$
+                Console.WriteLine($"Case #{k}: ");
+                k++;
+            }
+
+DriverProgram and script to merge files for submission?
+Confirm mono compiles with C# 7 tuples [No]

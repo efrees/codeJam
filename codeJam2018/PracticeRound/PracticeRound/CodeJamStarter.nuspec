@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>CodeJamStarter</id>
+    <version>1.0.0</version>
+    <authors>Eric Frees</authors>
+    <owners>Eric Frees</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Initial content and references for my participation in Code Jam.</description>
+    <dependencies>
+      <group targetFramework=".NETCoreApp2.0">
+        <dependency id="Microsoft.NETCore.App" version="2.0.0" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="bin\Debug\netcoreapp2.0\PracticeRound.dll" target="lib\netcoreapp2.0\PracticeRound.dll" />
+    <file src="bin\Debug\netcoreapp2.0\PracticeRound.runtimeconfig.json" target="lib\netcoreapp2.0\PracticeRound.runtimeconfig.json" />
+	<file src=".\getInput.bat" target="content\getInput.bat" />
+	<file src=".\runProgram.bat" target="content\runProgram.bat" />
+  </files>
+</package>
