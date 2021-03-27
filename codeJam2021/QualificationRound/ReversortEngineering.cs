@@ -5,7 +5,7 @@ namespace QualificationRound
 {
     class ReversortEngineering
     {
-        static void Main(string[] args)
+        static void MainC(string[] args)
         {
             var T = int.Parse(Console.ReadLine());
 

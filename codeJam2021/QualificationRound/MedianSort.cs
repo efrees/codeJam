@@ -1,13 +1,14 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 
 namespace QualificationRound
 {
     class MedianSort
     {
-        // private static readonly int[] test = new[] { 9, 4, 10, 7, 8, 2, 3, 6, 1, 5 };
+        //private static readonly int[] test = new[] { 9, 2, 5, 10, 3, 1, 7, 6, 8, 4 };
 
-        static void MainD(string[] args)
+        static void Main(string[] args)
         {
             var rawInput = Console.ReadLine().Split(' ').ToArray();
             var T = int.Parse(rawInput[0]);
@@ -32,46 +33,66 @@ namespace QualificationRound
 
         private static bool RunMedianSort(int[] array)
         {
-            for (var i = 1; i < array.Length - 1; i++)
+            for (var i = 2; i < array.Length; i++)
             {
-                for (var j = i + 1; j > 0; j -= 2)
-                {
-                    j = Math.Max(j, 2); // Make sure we compare to the first element when inserting
-                    var x = array[j - 2];
-                    var y = array[j - 1];
-                    var z = array[j];
+                var x = array[i - 2];
+                var y = array[i - 1];
+                var z = array[i];
 
-                    var answer = AskForMedian(x, y, z);
-                    if (answer == -1)
-                    {
+                var median = AskForMedian(x, y, z);
+                if (median == -1)
+                {
+                    return false;
+                }
+
+                if (median == y)
+                {
+                    // Already correctly inserted. Move to next insert (i)
+                    continue;
+                }
+
+                if (median == z)
+                {
+                    //insert z below y and move to next insert
+                    array[i] = y;
+                    array[i - 1] = z;
+                    continue;
+                }
+
+                // (median == x)
+                //insert z below x and work to left
+                array[i] = y;
+                array[i - 1] = x;
+                array[i - 2] = z;
+
+
+                // 3 [5] 1 --> [5] 3 1
+                // BUGFIX: Need to keep the "direction" the same when comparing to first element after an insert
+                for (var j = i - 2; j > 0; j--)
+                {
+                    //Console.Error.WriteLine(string.Join(" ", array.Select(x1 => test[x1 - 1])));
+                    //Console.Error.WriteLine(string.Join(" ", array));
+                    x = array[j - 1];
+                    y = array[j];
+                    z = array[j + 1];
+
+                    median = AskForMedian(x, y, z);
+                    if (median == -1){
                         return false;
                     }
 
-                    if (answer == x)
+                    // y and z are already in correct order thanks to the first step of insert above.
+                    if (median == x)
                     {
-                        //insert z below x and continue checking
-                        array[j] = y;
-                        array[j - 1] = x;
-                        array[j - 2] = z;
-                        //Console.Error.WriteLine(string.Join(" ", array.Select(x1 => test[x1 - 1])));
-                        //Console.Error.WriteLine(string.Join(" ", array));
-                    }
-                    else if (answer == z)
-                    {
-                        //insert z below y and stop here
-                        array[j] = y;
-                        array[j - 1] = z;
-                        break;
+                        array[j] = x;
+                        array[j - 1] = y;
                     }
                     else
                     {
-                        // Already correctly inserted (y is median)
+                        Debug.Assert(median == y);
                         break;
                     }
                 }
-
-                //Console.Error.WriteLine(string.Join(" ", array.Select(x => test[x - 1])));
-                //Console.Error.WriteLine(string.Join(" ", array));
             }
 
             return true;
