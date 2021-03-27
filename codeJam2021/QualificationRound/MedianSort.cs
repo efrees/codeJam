@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Linq;
 
 namespace QualificationRound
 {
     class MedianSort
     {
-        //private static readonly int[] test = new[] { 9, 2, 5, 10, 3, 1, 7, 6, 8, 4 };
-
         static void Main(string[] args)
         {
             var rawInput = Console.ReadLine().Split(' ').ToArray();
@@ -35,68 +32,101 @@ namespace QualificationRound
         {
             for (var i = 2; i < array.Length; i++)
             {
-                var x = array[i - 2];
-                var y = array[i - 1];
-                var z = array[i];
+                var valToInsert = array[i];
 
-                var median = AskForMedian(x, y, z);
-                if (median == -1)
+                var insertPosition = FindInsertPositionTernary(array, 0, i - 1, valToInsert);
+                if (insertPosition == -1)
                 {
                     return false;
                 }
 
-                if (median == y)
+                for (var j = i; j > insertPosition; j--)
                 {
-                    // Already correctly inserted. Move to next insert (i)
-                    continue;
+                    array[j] = array[j - 1];
                 }
 
-                if (median == z)
-                {
-                    //insert z below y and move to next insert
-                    array[i] = y;
-                    array[i - 1] = z;
-                    continue;
-                }
-
-                // (median == x)
-                //insert z below x and work to left
-                array[i] = y;
-                array[i - 1] = x;
-                array[i - 2] = z;
-
-
-                // 3 [5] 1 --> [5] 3 1
-                // BUGFIX: Need to keep the "direction" the same when comparing to first element after an insert
-                for (var j = i - 2; j > 0; j--)
-                {
-                    //Console.Error.WriteLine(string.Join(" ", array.Select(x1 => test[x1 - 1])));
-                    //Console.Error.WriteLine(string.Join(" ", array));
-                    x = array[j - 1];
-                    y = array[j];
-                    z = array[j + 1];
-
-                    median = AskForMedian(x, y, z);
-                    if (median == -1){
-                        return false;
-                    }
-
-                    // y and z are already in correct order thanks to the first step of insert above.
-                    if (median == x)
-                    {
-                        array[j] = x;
-                        array[j - 1] = y;
-                    }
-                    else
-                    {
-                        Debug.Assert(median == y);
-                        break;
-                    }
-                }
+                array[insertPosition] = valToInsert;
             }
 
             return true;
         }
+
+        private static int FindInsertPositionTernary(int[] array, int low, int high, int valToInsert)
+        {
+            if (low > high)
+            {
+                return low;
+            }
+            
+            var lowMiddle = low + (high - low) / 3;
+            var highMiddle = low + (high - low) * 2 / 3;
+
+            var isRangeOfTwo = high - low == 1;
+            if (isRangeOfTwo)
+            {
+                highMiddle = high;
+            }
+
+            var p1 = array[lowMiddle];
+            var p2 = array[highMiddle];
+
+            var median = AskForMedian(p1, p2, valToInsert);
+            if (median == -1)
+            {
+                return -1;
+            }
+
+            // We know p1 < p2
+            if (median == p1)
+            {
+                // insert in low section
+                // If low == lowMiddle, top case will catch it after they cross.
+                if (isRangeOfTwo)
+                {
+                    return lowMiddle;
+                }
+
+                var newHigh1 = Math.Max(lowMiddle - 1, low + 1);
+
+                return FindInsertPositionTernary(array, low, newHigh1, valToInsert);
+            }
+
+            if (median == p2)
+            {
+                // insert in high section
+                return isRangeOfTwo
+                    ? high + 1
+                    : FindInsertPositionTernary(array, highMiddle, high, valToInsert);
+            }
+
+            // insert in middle
+            if (isRangeOfTwo)
+            {
+                return highMiddle;
+            }
+
+            // if lowMiddle is adjacent to highMiddle (range of three) they'll cross and we'll use highMiddle (the new "low")
+            var newLow = lowMiddle + 1;
+            var newHigh = highMiddle - 1;
+
+            // if they were separated by one, we'll have to do one more comparison with the current highMiddle
+            if (newHigh == newLow)
+            {
+                newHigh++;
+            }
+            
+            return isRangeOfTwo
+                ? highMiddle
+                : FindInsertPositionTernary(array, newLow, newHigh, valToInsert);
+        }
+
+        //private static int ActualMedian(int p1, int p2, int valToInsert)
+        //{
+        //    var vals = new[] { p1, p2, valToInsert };
+        //    var max = vals.Max();
+        //    var min = vals.Min();
+        //    return vals.Except(new[] { min, max }).First();
+        //}
 
         private static int AskForMedian(int x, int y, int z)
         {
