@@ -6,7 +6,7 @@ namespace Round1A
 {
     class AppendSort
     {
-        static void Main(string[] args)
+        static void MainA(string[] args)
         {
             var T = int.Parse(Console.ReadLine());
 
