@@ -29,26 +29,53 @@ namespace QualificationRound
             // If we have a current character and the next is different, we can match either one with the same result as if the blanks aren't there.
             // Conclusion: all blanks can be ignored. But that bonus point... ;-)
 
-            var cost = 0;
-            var previous = '-';
-            foreach (var next in stateOfArt.Where(c => c != '?'))
+            if (cjCost > 0 && jcCost > 0)
             {
-                if (previous != '-')
+                var cost = 0;
+                var previous = '-';
+                foreach (var next in stateOfArt.Where(c => c != '?'))
                 {
-                    if (previous == 'C' && next == 'J')
+                    if (previous != '-')
                     {
-                        cost += cjCost;
+                        if (previous == 'C' && next == 'J')
+                        {
+                            cost += cjCost;
+                        }
+                        else if (previous == 'J' && next == 'C')
+                        {
+                            cost += jcCost;
+                        }
                     }
-                    else if (previous == 'J' && next == 'C')
-                    {
-                        cost += jcCost;
-                    }
+
+                    previous = next;
                 }
 
-                previous = next;
+                return cost;
             }
+            else
+            {
+                // General algorithm, maximizing sequences that earn money.
+                // Any sequence of blanks in the middle can either add n/2 pairs of changes (+1 pair if boundaries are the same character) or add zero
+                // Any sequence of blanks at the start can add n/2 pairs
 
-            return cost;
+                // C???J
+                // CCCCJ One CJ
+                // CJCJJ Two CJs, one JC
+                // CCJCJ Two CJs, one JC
+
+                // C??J
+                // CCCJ One CJ
+                // CJCJ Two CJs, one JC
+                // CJCJ Two CJs, one JC
+
+                // C???C
+                // CCCCC - none
+                // CJCJC Two CJs, two JCs
+                // CCJCC One CJ, one JC
+                // CJCCC One CJ, one JC
+                return 0;
+
+            }
         }
     }
 }

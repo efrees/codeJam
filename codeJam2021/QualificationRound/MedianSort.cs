@@ -5,7 +5,7 @@ namespace QualificationRound
 {
     class MedianSort
     {
-        static void Main(string[] args)
+        static void MainC(string[] args)
         {
             var rawInput = Console.ReadLine().Split(' ').ToArray();
             var T = int.Parse(rawInput[0]);
